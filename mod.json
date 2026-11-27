@@ -1,0 +1,14 @@
+{
+  "geode": "6.0.0",
+  "gd": {
+    "win": "2.2091",
+    "android": "2.2091",
+    "mac": "2.2091",
+    "ios": "2.2091"
+  },
+  "id": "bncgfin-wq.lite",
+  "name": "Lite",
+  "version": "v1.0.0",
+  "developer": "bncgfin-wq",
+  "description": "Hides particles to reduce lag"
+}
