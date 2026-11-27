@@ -13,11 +13,8 @@ namespace {
             ps->setVisible(false);
             count++;
         }
-        auto children = node->getChildren();
-        if (!children) return count;
-        CCObject* obj = nullptr;
-        CCARRAY_FOREACH(children, obj) {
-            count += stopParticles(static_cast<CCNode*>(obj), depth + 1);
+        for (CCNode* child : node->getChildrenExt()) {
+            count += stopParticles(child, depth + 1);
         }
         return count;
     }
