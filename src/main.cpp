@@ -7,11 +7,14 @@ using namespace geode::prelude;
 namespace {
     int stopParticles(CCNode* node, int depth) {
         if (!node || depth > 6) return 0;
+        if (typeinfo_cast<CCSpriteBatchNode*>(node)) return 0;
         int count = 0;
         if (auto ps = typeinfo_cast<CCParticleSystem*>(node)) {
-            ps->stopSystem();
-            ps->setVisible(false);
-            count++;
+            if (ps->isVisible()) {
+                ps->stopSystem();
+                ps->setVisible(false);
+                count++;
+            }
         }
         for (CCNode* child : node->getChildrenExt()) {
             count += stopParticles(child, depth + 1);
@@ -53,7 +56,7 @@ class $modify(LitePlayLayer, PlayLayer) {
 
     void tickSlow(float) {
         if (!m_fields->lite) return;
-        m_fields->hidden = stopParticles(this, 0);
+        m_fields->hidden += stopParticles(this, 0);
     }
 
     void setupHasCompleted() {
@@ -75,16 +78,15 @@ class $modify(LitePlayLayer, PlayLayer) {
         this->addChild(m_fields->label, 1000);
 
         this->schedule(schedule_selector(LitePlayLayer::tickFrame));
-        this->schedule(schedule_selector(LitePlayLayer::tickSlow), 0.5f);
+        this->schedule(schedule_selector(LitePlayLayer::tickSlow), 1.0f);
         updateLabel();
     }
 
     void onToggleLite(CCObject*) {
         m_fields->lite = !m_fields->lite;
+        m_fields->hidden = 0;
         if (m_fields->lite) {
             m_fields->hidden = stopParticles(this, 0);
-        } else {
-            m_fields->hidden = 0;
         }
         updateLabel();
     }
